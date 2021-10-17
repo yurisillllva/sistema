@@ -11,7 +11,7 @@ export default function Profile (){
             <Header/>
 
             <div className="content">
-                <Title>
+                <Title name="Meu Perfil">
                     <FiSettings size={25} />
                 </Title>
             </div>
