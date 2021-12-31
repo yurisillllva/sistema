@@ -27,18 +27,19 @@ function AuthProvider({ children }){
 
   }, [])
 
-  //Fazendo login de usuário
+
+  //Fazendo login do usuario
   async function signIn(email, password){
     setLoadingAuth(true);
 
     await firebase.auth().signInWithEmailAndPassword(email, password)
-    .then( async(value)=> {
+    .then(async (value)=> {
       let uid = value.user.uid;
 
       const userProfile = await firebase.firestore().collection('users')
       .doc(uid).get();
 
-      let data= {
+      let data = {
         uid: uid,
         nome: userProfile.data().nome,
         avatarUrl: userProfile.data().avatarUrl,
@@ -47,21 +48,24 @@ function AuthProvider({ children }){
 
       setUser(data);
       storageUser(data);
-      setLoading(false);
+      setLoadingAuth(false);
       toast.success('Bem vindo de volta!');
+
 
     })
     .catch((error)=>{
       console.log(error);
-      toast.error('Ops algo deu errado!'); 
+      toast.error('Ops algo deu errado!');
       setLoadingAuth(false);
     })
+
   }
-  
-  //Cadastrando Usuário
+
+
+  //Cadastrando um novo usuario
   async function signUp(email, password, nome){
-    setLoading(true);
-    
+    setLoadingAuth(true);
+
     await firebase.auth().createUserWithEmailAndPassword(email, password)
     .then( async (value)=>{
       let uid = value.user.uid;
@@ -82,40 +86,50 @@ function AuthProvider({ children }){
 
         setUser(data);
         storageUser(data);
-        setLoading(false);
-        toast.success('Bem Vindo a plataforma!');
+        setLoadingAuth(false);
+        toast.success('Bem vindo a plataforma!');
 
       })
+
     })
-    .catch((error) =>{
+    .catch((error)=>{
       console.log(error);
       toast.error('Ops algo deu errado!');
       setLoadingAuth(false);
-      
     })
+
   }
+
+
 
   function storageUser(data){
     localStorage.setItem('SistemaUser', JSON.stringify(data));
   }
 
 
+
+  //Logout do usuario
   async function signOut(){
     await firebase.auth().signOut();
     localStorage.removeItem('SistemaUser');
     setUser(null);
   }
 
+
   return(
-    <AuthContext.Provider value={{ signed: !!user,  
-    user, loading,
-    signUp,
-    signOut, 
-    signIn, 
-    loadingAuth, 
-    setUser,
-    storageUser 
-    }}>
+    <AuthContext.Provider 
+    value={{ 
+      signed: !!user,  
+      user, 
+      loading, 
+      signUp,
+      signOut,
+      signIn,
+      loadingAuth,
+      setUser,
+      storageUser
+    }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -5,7 +5,7 @@ export default function Title({children, name}){
   return(
     <div className="title">
       {children}
-      <span>{name}</span> 
+      <span>{name}</span>
     </div>
   )
 }
